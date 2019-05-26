@@ -1,5 +1,4 @@
 import bot.Bot
-import cats.effect.concurrent.Ref
 import cats.effect.{ExitCode, IO, IOApp}
 import cats.implicits._
 import com.softwaremill.sttp.asynchttpclient.cats.AsyncHttpClientCatsBackend
@@ -10,9 +9,9 @@ object Run extends IOApp {
   val token = config.getString("token")
   implicit val sttpBackend = AsyncHttpClientCatsBackend[cats.effect.IO]()
 
+  val bot = new Bot(token)
+
   def run(args: List[String]): IO[ExitCode] = for {
-    ref <- Ref.of[IO, Set[Long]](Set.empty[Long])
-    bot = new Bot(token, ref)
     _ <- bot.run()
     _ <- IO(println("Bot is successfully started."))
   } yield ExitCode.Success

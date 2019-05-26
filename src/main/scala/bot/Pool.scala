@@ -3,14 +3,11 @@ package bot
 import cats.effect.IO
 import cats.effect.concurrent.Ref
 
-/**
-  * Blocking pool of elements of type `A`
-  */
 trait Pool[F[_], A] {
-  /**
-    * Returns pair of `A` or blocks until the pair is available
-    */
-  def pair(a: A): F[(A, A)]
+
+  def current: F[Set[A]]
+
+  def register(a: A): F[Unit]
 }
 
 class IoPool[A](pool: Ref[IO, Set[A]]) {
